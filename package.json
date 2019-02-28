@@ -1,0 +1,16 @@
+{
+  "name": "floatcaculate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^4.2.0",
+    "mathjs": "^5.5.0",
+    "mocha": "^6.0.2"
+  }
+}
