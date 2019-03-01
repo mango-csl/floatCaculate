@@ -8,6 +8,9 @@ var accuracyCompute = calc.accuracyCompute;
 var getDecNum = calc.getDecNum;
 var accuracyTofixed = calc.accuracyTofixed;
 
+var math = require('./lib/math_v0.18.0');
+math = new math();
+
 function test_countDecimals(number_a, number_b, computedType, expected) {
     var info = number_a + computedType + number_b + "=" + expected;
     it(info, function (done) {
@@ -21,11 +24,10 @@ function test_countDecimals(number_a, number_b, computedType, expected) {
 
 function demo(info, expected) {
     it(info, function (done) {
-
-        var value = eval(info);
-        // 判断小数两位以上的时候，就进行四舍五入，这里调用志铠写好的方法
+        var value = math.eval(info);
+        // 判断小数两位以上的时候，就进行四舍五入，这里调用原生toFixed的方法进行比较
         if (getDecNum(value) > 2) {
-            value = Number(accuracyTofixed(value, 2))
+            value = Number(value.toFixed(2));
         }
         console.log(info + " = ", value);
         expect(value).to.be.equal(expected);
@@ -33,7 +35,16 @@ function demo(info, expected) {
     });
 }
 
-var _toFixed = function (num, s) {
+function demo2(info, expected) {
+    it(info, function (done) {
+        var value = Number(_toFixed(math.eval(info), 2));
+        console.log(info + " = ", value);
+        expect(value).to.be.equal(expected);
+        done();
+    });
+}
+
+function _toFixed(num, s) {
     var times = Math.pow(10, s + 1),
         des = parseInt(num * times),
         rest = des % 10;
@@ -41,15 +52,6 @@ var _toFixed = function (num, s) {
         return ((parseFloat(des) + 1) / times).toFixed(s);
     }
     return num.toFixed(s);
-};
-
-function demo2(info, expected) {
-    it(info, function (done) {
-        var value = +(eval(info).toFixed(2));
-        console.log(info + " = ", value);
-        expect(value).to.be.equal(expected);
-        done();
-    });
 }
 
 describe('TEST countDecimals', function () {
@@ -71,88 +73,45 @@ describe('TEST countDecimals', function () {
 });
 
 describe('TEST String', function () {
-    // 计算公式
-    var items = [
-        '5.01-3.01',
-        '5.01*3.01',
-        '99 * (43.9 + 2) * 500',
-        '99 * (43.9 + 2)',
-        '43.9 + 2',
-        '(0.7 * 0.8)',
-        '0.1 + 0.2',
-        '7 * 0.8',
-        '1.335'// 火狐浏览器下，当最后一位小数点为5的时候，保留2位，四舍五入会出错，结果为1.33
+    // 随机产生两个数字进行计算测试
+    var type = [
+        '+',
+        '-',
+        '*',
+        '/'
     ];
+    var value1,
+        value2,
+        flag,
+        str;
 
-    // 计算的结果
-    var result = [
-        2.00,
-        15.08,
-        2272050,
-        4544.10,
-        45.9,
-        0.56,
-        0.3,
-        5.60,
-        1.34
-    ];
-
-    // for (var i = 0, len = items.length; i < len; i++) {
-    //     demo(items[i], result[i]);
-    // }
-
-    // test_countDecimals(5.01, 3.01, '-', 2.00);
-    // test_countDecimals(5.01, 3.01, '*', 15.08);
-
-    var demo1 = [
-        '3 - 3 = 0',
-        '3.00 - 3.00 = 0',
-        '30e-2 - 30e-2 = 0',
-        '3.00e10 - 3.00e10 = 0'
-    ];
-
-    // demo1.forEach(function (value, key) {
-    //     var temp = value.split('=');
-    //     demo(temp[0], +temp[1]);
-    // });
-    //
-    // demo2('0.7*0.8', 0.56);
-    // demo2('7*0.8', 5.6);
-    // demo2('0.1+0.2', 0.3);
-
-
-    // 随机数计算测试
-    var arr = [];
     for (var i = 0; i < 1000; i++) {
-        var value1 = Math.random() * 100;
-        var value2 = Math.random() * 100;
-        var type = [
-            '+',
-            '-',
-            '*',
-            '/'
-        ][Math.floor(Math.random() * 4)];
-        var str = '' + value1 + type + value2 + '';
-        if (type !== '-') {
-            demo2(str, accuracyCompute(value1, value2, type));
+        value1 = Math.random() * 100;
+        value2 = Math.random() * 100;
+        flag = type[Math.floor(Math.random() * 4)];
+        str = value1 + flag + value2;
+        if (flag !== '-') {
+            // 原生toFixed和accuracyTofixed方法的结果比较测试
+            // demo(str, accuracyCompute(value1, value2, type));
+            // _toFixed和accuracyTofixed方法的结果比较测试
+            demo2(str, accuracyCompute(value1, value2, flag));
         }
     }
+});
 
-    // demo('3.444', 3.45);
+describe('TEST _toFixed', function () {
+    // 测试原生toFixed、accuracyTofixed、_toFixed方法的结果值比较
+    var num = 3.445;
+    console.log(num);// 3.445
+    console.log(num.toFixed(2));// 3.44 错误
+    console.log(accuracyTofixed(num, 2));// 3.45 正确
+    console.log(_toFixed(num, 2));// 3.45 正确
 
-    // 经过测试，可能是accuracyTofixed和原生的toFixed的结果值有差别
-    // console.log(7.093781058943516 + 86.86119714716432);// 93.95497820610784
-    // console.log((7.093781058943516 + 86.86119714716432).toFixed(2));// 93.95
-    // console.log(_toFixed(7.093781058943516 + 86.86119714716432, 2));// 93.95
-    // console.log(accuracyTofixed(7.093781058943516 + 86.86119714716432, 2));// 93.96
-    // console.log('---------------------------------------------');
-    // console.log(3.445);// 3.445，
-    // console.log((3.445).toFixed(2));// 3.44 ie11下3.45 谷歌浏览器下3.44
-    // console.log(_toFixed(3.445, 2));// 3.45
-    // console.log(accuracyTofixed(3.445, 2));// 3.45
-    // console.log('---------------------------------------------');
-    // console.log(3.4401);// 3.4401
-    // console.log((3.4401).toFixed(2));// 3.44
-    // console.log(_toFixed(3.4401, 2));// 3.44
-    // console.log(accuracyTofixed(3.4401, 2));// 3.44
+    num = 147.50497;
+    console.log(num);// 147.50497
+    console.log(num.toFixed(2));// 147.50 正确
+    console.log(accuracyTofixed(num, 2));// 147.51 错误
+    console.log(_toFixed(num, 2));// 147.50 正确
+
+    // 结论是：accuracyTofixed方法可能有点问题，每次加0.5会改变原有的值，再计算会出现问题，所以应该用_toFixed。
 });
