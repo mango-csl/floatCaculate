@@ -3,7 +3,7 @@ var assert = chai.assert;    // Using Assert style
 var expect = chai.expect;    // Using Expect style
 var should = chai.should();  // Using Should style
 
-var calc = require('./hzk');
+var calc = require('../hzk');
 var accuracyCompute = calc.accuracyCompute;
 
 function test_countDecimals(number_a, number_b, computedType, expected) {
