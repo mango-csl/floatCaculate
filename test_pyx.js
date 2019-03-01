@@ -134,25 +134,25 @@ describe('TEST String', function () {
         ][Math.floor(Math.random() * 4)];
         var str = '' + value1 + type + value2 + '';
         if (type !== '-') {
-            // demo2(str, accuracyCompute(value1, value2, type));
+            demo2(str, accuracyCompute(value1, value2, type));
         }
     }
 
     // demo('3.444', 3.45);
 
     // 经过测试，可能是accuracyTofixed和原生的toFixed的结果值有差别
-    console.log(7.093781058943516 + 86.86119714716432);// 93.95497820610784
-    console.log((7.093781058943516 + 86.86119714716432).toFixed(2));// 93.95
-    console.log(_toFixed(7.093781058943516 + 86.86119714716432, 2));// 93.95
-    console.log(accuracyTofixed(7.093781058943516 + 86.86119714716432, 2));// 93.96
-    console.log('---------------------------------------------');
-    console.log(3.445);// 3.445，
-    console.log((3.445).toFixed(2));// 3.44 ie11下3.45 谷歌浏览器下3.44
-    console.log(_toFixed(3.445, 2));// 3.45
-    console.log(accuracyTofixed(3.445, 2));// 3.45
-    console.log('---------------------------------------------');
-    console.log(3.4401);// 3.4401
-    console.log((3.4401).toFixed(2));// 3.44
-    console.log(_toFixed(3.4401, 2));// 3.44
-    console.log(accuracyTofixed(3.4401, 2));// 3.44
+    // console.log(7.093781058943516 + 86.86119714716432);// 93.95497820610784
+    // console.log((7.093781058943516 + 86.86119714716432).toFixed(2));// 93.95
+    // console.log(_toFixed(7.093781058943516 + 86.86119714716432, 2));// 93.95
+    // console.log(accuracyTofixed(7.093781058943516 + 86.86119714716432, 2));// 93.96
+    // console.log('---------------------------------------------');
+    // console.log(3.445);// 3.445，
+    // console.log((3.445).toFixed(2));// 3.44 ie11下3.45 谷歌浏览器下3.44
+    // console.log(_toFixed(3.445, 2));// 3.45
+    // console.log(accuracyTofixed(3.445, 2));// 3.45
+    // console.log('---------------------------------------------');
+    // console.log(3.4401);// 3.4401
+    // console.log((3.4401).toFixed(2));// 3.44
+    // console.log(_toFixed(3.4401, 2));// 3.44
+    // console.log(accuracyTofixed(3.4401, 2));// 3.44
 });
