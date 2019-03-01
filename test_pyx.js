@@ -3,7 +3,6 @@ var assert = chai.assert;    // Using Assert style
 var expect = chai.expect;    // Using Expect style
 var should = chai.should();  // Using Should style
 
-var Math = require('./lib/math_v0.18.0');
 var calc = require('./hzk');
 var accuracyCompute = calc.accuracyCompute;
 var getDecNum = calc.getDecNum;
@@ -34,9 +33,19 @@ function demo(info, expected) {
     });
 }
 
+var _toFixed = function (num, s) {
+    var times = Math.pow(10, s + 1),
+        des = parseInt(num * times),
+        rest = des % 10;
+    if (rest === 5) {
+        return ((parseFloat(des) + 1) / times).toFixed(s);
+    }
+    return num.toFixed(s);
+};
+
 function demo2(info, expected) {
     it(info, function (done) {
-        var value = +Math().eval(info).toFixed(2);
+        var value = +(eval(info).toFixed(2));
         console.log(info + " = ", value);
         expect(value).to.be.equal(expected);
         done();
@@ -88,12 +97,12 @@ describe('TEST String', function () {
         1.34
     ];
 
-    for (var i = 0, len = items.length; i < len; i++) {
-        demo(items[i], result[i]);
-    }
+    // for (var i = 0, len = items.length; i < len; i++) {
+    //     demo(items[i], result[i]);
+    // }
 
-    test_countDecimals(5.01, 3.01, '-', 2.00);
-    test_countDecimals(5.01, 3.01, '*', 15.08);
+    // test_countDecimals(5.01, 3.01, '-', 2.00);
+    // test_countDecimals(5.01, 3.01, '*', 15.08);
 
     var demo1 = [
         '3 - 3 = 0',
@@ -102,12 +111,48 @@ describe('TEST String', function () {
         '3.00e10 - 3.00e10 = 0'
     ];
 
-    demo1.forEach(function (value, key) {
-        var temp = value.split('=');
-        demo(temp[0], +temp[1]);
-    });
+    // demo1.forEach(function (value, key) {
+    //     var temp = value.split('=');
+    //     demo(temp[0], +temp[1]);
+    // });
+    //
+    // demo2('0.7*0.8', 0.56);
+    // demo2('7*0.8', 5.6);
+    // demo2('0.1+0.2', 0.3);
 
-    demo2('0.7*0.8', 0.56);
-    demo2('7*0.8', 5.6);
-    demo2('0.1+0.2', 0.3);
+
+    // 随机数计算测试
+    var arr = [];
+    for (var i = 0; i < 1000; i++) {
+        var value1 = Math.random() * 100;
+        var value2 = Math.random() * 100;
+        var type = [
+            '+',
+            '-',
+            '*',
+            '/'
+        ][Math.floor(Math.random() * 4)];
+        var str = '' + value1 + type + value2 + '';
+        if (type !== '-') {
+            // demo2(str, accuracyCompute(value1, value2, type));
+        }
+    }
+
+    // demo('3.444', 3.45);
+
+    // 经过测试，可能是accuracyTofixed和原生的toFixed的结果值有差别
+    console.log(7.093781058943516 + 86.86119714716432);// 93.95497820610784
+    console.log((7.093781058943516 + 86.86119714716432).toFixed(2));// 93.95
+    console.log(_toFixed(7.093781058943516 + 86.86119714716432, 2));// 93.95
+    console.log(accuracyTofixed(7.093781058943516 + 86.86119714716432, 2));// 93.96
+    console.log('---------------------------------------------');
+    console.log(3.445);// 3.445，
+    console.log((3.445).toFixed(2));// 3.44 ie11下3.45 谷歌浏览器下3.44
+    console.log(_toFixed(3.445, 2));// 3.45
+    console.log(accuracyTofixed(3.445, 2));// 3.45
+    console.log('---------------------------------------------');
+    console.log(3.4401);// 3.4401
+    console.log((3.4401).toFixed(2));// 3.44
+    console.log(_toFixed(3.4401, 2));// 3.44
+    console.log(accuracyTofixed(3.4401, 2));// 3.44
 });
