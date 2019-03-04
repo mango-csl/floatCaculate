@@ -3,8 +3,8 @@ var assert = chai.assert;    // Using Assert style
 var expect = chai.expect;    // Using Expect style
 var should = chai.should();  // Using Should style
 
-var eval = require('./lib/math_v0.18.0').eval;
-var accuracyTofixed = require('./hzk').accuracyTofixed();
+var eval = require('../lib/math_v0.18.0').eval;
+var accuracyTofixed = require('../hzk').accuracyTofixed();
 // var eval = calc.eval;
 
 function test_countDecimals(info, expected) {
