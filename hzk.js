@@ -36,7 +36,7 @@ var accuracyCompute = function (number_a, number_b, computedType) {
             result = number_a / number_b;
             break;
     }
-    return getDecNum(result) > 2 ? Number(accuracyTofixed(result, 2)) : result;
+    return result;
 };
 
 /**

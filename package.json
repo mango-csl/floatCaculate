@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test_pyx.js"
+    "test": "mocha test --recursive"
   },
   "author": "",
   "license": "ISC",
@@ -12,5 +12,8 @@
     "chai": "^4.2.0",
     "mathjs": "^5.5.0",
     "mocha": "^6.0.2"
+  },
+  "devDependencies": {
+    "nyc": "^13.3.0"
   }
 }

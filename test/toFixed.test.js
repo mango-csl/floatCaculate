@@ -1,46 +1,23 @@
-var chai = require('chai');
-var assert = chai.assert;    // Using Assert style
-var expect = chai.expect;    // Using Expect style
-var should = chai.should();
-
-var _toFixed = function (num, s) {
-    var times = Math.pow(10, s + 1),
-        des = parseInt(num * times),
-        rest = des % 10;
-    if (rest === 5) {
-        return ((parseFloat(des) + 1) / times).toFixed(s);
-    }
-    return num.toFixed(s);
-};
+let chai = require('chai');
+let assert = chai.assert; // Using Assert style
+let expect = chai.expect; // Using Expect style
+let should = chai.should();
+let math = require('../lib/math.min');
 
 function runExpect(info, expected) {
     it(info, function (done) {
-        var value = +(eval(info).toFixed(2));
+        let value = math.format(Number(math.eval(info)), {notation: 'fixed', precision: 2});
         console.log(info + " = ", value);
-        expect(value).to.be.equal(expected);
+        expect(value.toString()).to.be.equal(expected);
         done();
     });
 }
 
-var type = [
-    '+',
-    '-',
-    '*',
-    '/'
-];
-describe('TEST countDecimals', function () {
-    describe('TEST Number', function () {
-        for (var i = 0; i < 1000; i++) {
-            var value1 = Math.random() * 100;
-            var value2 = Math.random() * 100;
-            var type = [
-                '+',
-                '-
-                '*',
-                '/'
-            ][Math.floor(Math.random() * 4)];
-            var str = '' + value1 + type + value2 + '';
-            runExpect(str, accuracyCompute(value1, value2, type));
-        }
-    });
+
+describe('TEST Number', function () {
+    let expression_source = ['99*(45.9+2.2)*500=2380950.00', '99*(43.9+2.2)=4563.90', '43.9+2.2=46.10', '0.1+0.2=0.30', '2.445=2.45', '147.50497=147.50'];
+    for (let item of expression_source) {
+        let msg = item.split('=');
+        runExpect(msg[0], msg[1]);
+    }
 });
